@@ -1,8 +1,10 @@
 <?php
 
 require_once (ROOT . '/config/config.php');
+require_once (ROOT . '/application/model/Database.php');
 
-function call() {
+function call()
+{
 
     $urlParts = explode('/', $_GET['url']);
     $module = isset($urlParts[0]) ? $urlParts[0] : '';

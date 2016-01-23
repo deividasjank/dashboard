@@ -4,7 +4,7 @@ namespace Controller;
 
 use View\View;
 
-class Controller
+abstract class Controller
 {
     protected $module;
     protected $controller;

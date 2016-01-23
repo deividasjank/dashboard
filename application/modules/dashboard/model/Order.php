@@ -1,9 +1,12 @@
 <?php
 namespace Modules\Dashboard\Model;
 
-class Order
+use Model\Model;
+
+class Order extends Model
 {
-    public function doSomething() {
+    public function doSomething()
+    {
         echo 'sss';
     }
 }

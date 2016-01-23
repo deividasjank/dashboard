@@ -14,7 +14,8 @@ class View
      * @param $controller
      * @param $action
      */
-    function __construct($module, $controller, $action) {
+    function __construct($module, $controller, $action)
+    {
         $this->module = $module;
         $this->controller = $controller;
         $this->action = $action;
@@ -24,14 +25,16 @@ class View
      * @param $name
      * @param $value
      */
-    public function set($name, $value) {
+    public function set($name, $value)
+    {
         $this->variables[$name] = $value;
     }
 
     /**
      * Render Controller view
      */
-    public function render() {
+    public function render()
+    {
         extract($this->variables);
         include dirname(__FILE__) . '/../modules/' . $this->module . '/view/' .
             $this->controller . '/' . $this->action . '.php';

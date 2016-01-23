@@ -44,39 +44,92 @@ class Dashboard extends Model
     /**
      * Fetch customers top
      *
-     * @param $top
+     * @param $from
+     * @param $to
+     * @param int $top
      * @return mixed
      */
-    public function getTopCustomers($top = 10)
+    public function getTopCustomers($from, $to, $top = 10)
     {
         $query = '
           SELECT COUNT(o.id) as orders_count, c.name, c.surname
           FROM `customer` c
           LEFT JOIN `order` o ON o.customer_id = c.id
+          WHERE (o.purchase_date BETWEEN ? AND ?)
           GROUP BY c.id
           ORDER BY orders_count DESC, c.surname ASC
           LIMIT ?
           ';
 
-        return $this->execute($query, [$top]);
+        return $this->execute($query, [$from, $to, $top]);
     }
 
     /**
      * Fetch top selling items
      *
+     * @param $from
+     * @param $to
      * @param $top
      * @return mixed
      */
-    public function getTopSellingItems($top = 10)
+    public function getTopSellingItems($from, $to, $top)
     {
         $query = '
           SELECT SUM(oi.quantity) as items_sold, oi.ean
           FROM `order_items` oi
+          LEFT JOIN `order` o ON o.id = oi.order_id
+          WHERE (o.purchase_date BETWEEN ? AND ?)
           GROUP BY oi.ean
           ORDER BY items_sold DESC, oi.ean ASC
           LIMIT ?
           ';
 
-        return $this->execute($query, [$top]);
+        return $this->execute($query, [$from, $to, $top]);
+    }
+
+    /**
+     * Fetch top orders by revenue
+     *
+     * @param int $top
+     * @param $from
+     * @param $to
+     * @return mixed
+     */
+    public function getTopOrdersByRevenue($from, $to, $top = 10)
+    {
+        $query = '
+          SELECT SUM(oi.quantity * oi.price) as revenue, o.id
+          FROM `order` o
+          LEFT JOIN `order_items` oi ON o.id = oi.order_id
+          WHERE (o.purchase_date BETWEEN ? AND ?)
+          GROUP BY o.id
+          ORDER BY revenue DESC, o.id ASC
+          LIMIT ?
+          ';
+
+        return $this->execute($query, [$from, $to, $top]);
+    }
+
+    /**
+     * Fetch top orders by item count
+     *
+     * @param int $top
+     * @param $from
+     * @param $to
+     * @return mixed
+     */
+    public function getTopOrdersByItemCount($from, $to, $top = 10)
+    {
+        $query = '
+          SELECT SUM(oi.quantity) as items_count, o.id
+          FROM `order` o
+          LEFT JOIN `order_items` oi ON o.id = oi.order_id
+          WHERE (o.purchase_date BETWEEN ? AND ?)
+          GROUP BY o.id
+          ORDER BY items_count DESC, o.id ASC
+          LIMIT ?
+          ';
+
+        return $this->execute($query, [$from, $to, $top]);
     }
 }

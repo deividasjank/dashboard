@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `order` (
   `country` varchar(2) NOT NULL,
   `device` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
+  INDEX (`purchase_date`),
   CONSTRAINT FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`)
 ) ENGINE = InnoDB;
 

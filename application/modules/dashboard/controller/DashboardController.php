@@ -14,7 +14,10 @@ class DashboardController extends Controller
 
     public function indexAction()
     {
-        var_dump($this->model->getTopCustomers());
+        $from = strtotime('first day of last month 00:00:00');
+        $to = strtotime('last day of last month 23:59:59');
+
+        var_dump($this->model->getTopOrdersByItemCount(10, $from, $to));
         $this->view->set('name', 'Deividas');
     }
 }

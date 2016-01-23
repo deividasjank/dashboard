@@ -26,9 +26,13 @@ class Database
         }
         if (!isset(self::$instance)) {
             self::$instance = new PDO(
-                'mysql:host=' . $config['database']['host'] . ';dbname=' . $config['database']['name'],
+                'mysql:host=' . $config['database']['host'] . ';dbname=' . $config['database']['name'] . ';charset=utf8',
                 $config['database']['user'],
-                $config['database']['password']
+                $config['database']['password'],
+                [
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false
+                ]
             );
         }
 

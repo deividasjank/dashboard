@@ -18,6 +18,19 @@ abstract class Model
     }
 
     /**
+     * @param string $query
+     * @param array $params
+     * @return mixed
+     */
+    public function execute($query, $params = [])
+    {
+        $query = $this->connection->prepare($query);
+        $query->execute($params);
+
+        return $query->fetchAll();
+    }
+
+    /**
      * Destructor
      */
     public function __destruct()

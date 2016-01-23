@@ -1,7 +1,6 @@
 <?php
 
 require_once (ROOT . '/config/config.php');
-require_once (ROOT . '/application/model/Database.php');
 
 function call()
 {

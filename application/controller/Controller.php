@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Model\Model;
 use View\View;
 
 abstract class Controller
@@ -9,6 +10,15 @@ abstract class Controller
     protected $module;
     protected $controller;
     protected $action;
+
+    /**
+     * @var Model
+     */
+    protected $model;
+
+    /**
+     * @var View
+     */
     public $view;
 
     /**
@@ -22,8 +32,10 @@ abstract class Controller
         $this->controller = $controller;
         $this->action = $action;
         $this->view = new View($module, $controller, $action);
-
+        $this->init();
     }
+
+    abstract function init();
 
     public function __destruct()
     {

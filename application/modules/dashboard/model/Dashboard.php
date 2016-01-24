@@ -52,7 +52,7 @@ class Dashboard extends Model
     public function getTopCustomers($from, $to, $top = 10)
     {
         $query = '
-          SELECT COUNT(o.id) as orders_count, c.name, c.surname
+          SELECT c.name, c.surname, COUNT(o.id) as orders_count
           FROM `customer` c
           LEFT JOIN `order` o ON o.customer_id = c.id
           WHERE (o.purchase_date BETWEEN ? AND ?)
@@ -72,10 +72,10 @@ class Dashboard extends Model
      * @param $top
      * @return mixed
      */
-    public function getTopSellingItems($from, $to, $top)
+    public function getTopSellingItems($from, $to, $top = 10)
     {
         $query = '
-          SELECT SUM(oi.quantity) as items_sold, oi.ean
+          SELECT oi.ean as EAN, SUM(oi.quantity) as items_sold
           FROM `order_items` oi
           LEFT JOIN `order` o ON o.id = oi.order_id
           WHERE (o.purchase_date BETWEEN ? AND ?)
@@ -98,7 +98,7 @@ class Dashboard extends Model
     public function getTopOrdersByRevenue($from, $to, $top = 10)
     {
         $query = '
-          SELECT SUM(oi.quantity * oi.price) as revenue, o.id
+          SELECT o.id as ID, FROM_UNIXTIME(o.purchase_date, \'%Y-%m-%d\') as purchase_date, SUM(oi.quantity * oi.price) / 100 as revenue
           FROM `order` o
           LEFT JOIN `order_items` oi ON o.id = oi.order_id
           WHERE (o.purchase_date BETWEEN ? AND ?)
@@ -121,7 +121,7 @@ class Dashboard extends Model
     public function getTopOrdersByItemCount($from, $to, $top = 10)
     {
         $query = '
-          SELECT SUM(oi.quantity) as items_count, o.id
+          SELECT  o.id as ID, FROM_UNIXTIME(o.purchase_date, \'%Y-%m-%d\') as purchase_date, SUM(oi.quantity) as items_count
           FROM `order` o
           LEFT JOIN `order_items` oi ON o.id = oi.order_id
           WHERE (o.purchase_date BETWEEN ? AND ?)

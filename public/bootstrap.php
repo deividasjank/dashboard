@@ -4,7 +4,7 @@ require_once (ROOT . '/config/config.php');
 
 function call()
 {
-
+    parse_str(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY), $_REQUEST['params']);
     $urlParts = explode('/', $_GET['url']);
     $module = isset($urlParts[0]) ? $urlParts[0] : '';
     $controllerName = isset($urlParts[1]) ? $urlParts[1] : '';

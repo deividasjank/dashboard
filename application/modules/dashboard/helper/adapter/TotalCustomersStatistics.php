@@ -8,7 +8,7 @@ class TotalCustomersStatistics extends Statistics
 {
     public function getStatistics($from, $to)
     {
-        return $this->model->getTotalCustomers();
+        return $this->model->getTotalCustomers($from, $to);
     }
 
 }

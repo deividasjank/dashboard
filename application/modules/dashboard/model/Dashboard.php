@@ -37,19 +37,28 @@ class Dashboard extends Model
           LEFT JOIN `order` o ON o.id = oi.order_id
           WHERE (o.purchase_date BETWEEN ? AND ?)';
 
-        return $this->execute($query, [$from, $to]);
+        $data = $this->execute($query, [$from, $to]);
+
+        $data[0]['total_revenue'] = number_format($data[0]['total_revenue'], 2, '.', '');
+
+        return $data;
     }
 
     /**
      * Fetch total customers count
      *
+     * @param $from
+     * @param $to
      * @return mixed
      */
-    public function getTotalCustomers()
+    public function getTotalCustomers($from, $to)
     {
-        $query = 'SELECT COUNT(id) as customers_count FROM `customer`';
+        $query = '
+          SELECT COUNT(DISTINCT o.customer_id) as customers_count
+          FROM `order` o
+          WHERE (o.purchase_date BETWEEN ? AND ?)';
 
-        return $this->execute($query);
+        return $this->execute($query, [$from, $to]);
     }
 
     /**
@@ -118,7 +127,13 @@ class Dashboard extends Model
           LIMIT ?
           ';
 
-        return $this->execute($query, [$from, $to, $top]);
+        $data = $this->execute($query, [$from, $to, $top]);
+
+        foreach ($data as &$row) {
+            $row['revenue'] = number_format($row['revenue'], '2', '.', '');
+        }
+
+        return $data;
     }
 
     /**
@@ -142,5 +157,63 @@ class Dashboard extends Model
           ';
 
         return $this->execute($query, [$from, $to, $top]);
+    }
+
+    /**
+     * Fetch total orders
+     *
+     * @param $from
+     * @param $to
+     * @return mixed
+     */
+    public function getTotalOrdersForChart($from, $to)
+    {
+        $query = '
+          SELECT FROM_UNIXTIME(purchase_date, \'%Y-%m-%d\') date, COUNT(id) as orders_count
+          FROM `order`
+          WHERE (purchase_date BETWEEN ? AND ?)
+          GROUP BY date
+          ORDER BY date ASC';
+
+        $data = $this->execute($query, [$from, $to]);
+
+        $result = [];
+        foreach ($data as $row) {
+            $result[] = [
+                strtotime($row['date']) * 1000,
+                (int)$row['orders_count']
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Fetch total customers
+     *
+     * @param $from
+     * @param $to
+     * @return mixed
+     */
+    public function getTotalCustomersForChart($from, $to)
+    {
+        $query = '
+          SELECT FROM_UNIXTIME(o.purchase_date, \'%Y-%m-%d\') date, COUNT(DISTINCT o.customer_id) as customers_count
+          FROM `order` o
+          WHERE (o.purchase_date BETWEEN ? AND ?)
+          GROUP BY date
+          ORDER BY date ASC';
+
+        $data = $this->execute($query, [$from, $to]);
+
+        $result = [];
+        foreach ($data as $row) {
+            $result[] = [
+                strtotime($row['date']) * 1000,
+                (int)$row['customers_count']
+            ];
+        }
+
+        return $result;
     }
 }

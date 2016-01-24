@@ -24,7 +24,7 @@ class DashboardController extends Controller
             $to = strtotime($_REQUEST['params']['to'] . ' 23:59:59');
         } else {
             $to = strtotime('last day of last month 23:59:59');
-        }
+        }$to = time();
         $data = [];
         if (isset($_REQUEST['params']['type'])) {
             $data['type'] = trim(preg_replace('/[A-Z]/', ' $0', ucfirst($_REQUEST['params']['type'])));
@@ -40,5 +40,24 @@ class DashboardController extends Controller
         $this->view->set('to', $to);
         $this->view->set('type', isset($_REQUEST['params']['type']) ? $_REQUEST['params']['type'] : '');
         $this->view->set('data', $data);
+    }
+
+    public function chartAction()
+    {
+        if (isset($_REQUEST['params']['from'])) {
+            $from = strtotime($_REQUEST['params']['from'] . '-01 00:00:00');
+            $to = strtotime($_REQUEST['params']['from'] . ' next month -1 second');
+        } else {
+            $from = strtotime('first day of last month 00:00:00');
+            $to = strtotime('last day of last month 23:59:59');
+        }
+
+        $customers = $this->model->getTotalCustomersForChart($from, $to);
+        $orders = $this->model->getTotalOrdersForChart($from, $to);
+
+        $this->view->set('from', $from);
+        $this->view->set('to', $to);
+        $this->view->set('customers', $customers);
+        $this->view->set('orders', $orders);
     }
 }

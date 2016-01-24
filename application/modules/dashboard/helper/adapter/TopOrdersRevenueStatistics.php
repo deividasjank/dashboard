@@ -8,13 +8,7 @@ class TopOrdersRevenueStatistics extends Statistics
 {
     public function getStatistics($from, $to)
     {
-        $data = $this->model->getTopOrdersByRevenue($from, $to);
-
-        foreach ($data as &$row) {
-            $row['revenue'] = number_format($row['revenue'], '2', '.', '');
-        }
-
-        return $data;
+        return $this->model->getTopOrdersByRevenue($from, $to);
     }
 
 }

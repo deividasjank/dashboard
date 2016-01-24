@@ -2,6 +2,9 @@
 
 require_once (ROOT . '/config/config.php');
 
+/**
+ * Call required controller action
+ */
 function call()
 {
     parse_str(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY), $_REQUEST['params']);
@@ -27,6 +30,27 @@ function call()
         exit;
     }
     call_user_func_array(array($dispatch, $action), []);
+}
+
+/**
+ * Autoload files PSR-4 namespace
+ *
+ * @param $class
+ */
+function __autoload($class)
+{
+    $base = ROOT . '/application';
+    $parts = explode('\\', $class);
+    $numItems = count($parts);
+    $i = 0;
+    foreach ($parts as $part) {
+        if (++$i === $numItems) {
+            $base .= '/' . $part;
+        } else {
+            $base .= '/' . strtolower($part);
+        }
+    }
+    require_once($base . '.php');
 }
 
 call();

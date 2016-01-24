@@ -8,25 +8,36 @@ class Dashboard extends Model
     /**
      * Fetch total orders count
      *
+     * @param $from
+     * @param $to
      * @return mixed
      */
-    public function getTotalOrders()
+    public function getTotalOrders($from, $to)
     {
-        $query = 'SELECT COUNT(id) as orders_count FROM `order`';
+        $query = '
+          SELECT COUNT(id) as orders_count
+          FROM `order`
+          WHERE (purchase_date BETWEEN ? AND ?)';
 
-        return $this->execute($query);
+        return $this->execute($query, [$from, $to]);
     }
 
     /**
      * Fetch total revenue
      *
+     * @param $from
+     * @param $to
      * @return mixed
      */
-    public function getTotalRevenue()
+    public function getTotalRevenue($from, $to)
     {
-        $query = 'SELECT SUM(price * quantity) / 100 as total_revenue FROM `order_items`';
+        $query = '
+          SELECT SUM(oi.price * oi.quantity) / 100 as total_revenue
+          FROM `order_items` oi
+          LEFT JOIN `order` o ON o.id = oi.order_id
+          WHERE (o.purchase_date BETWEEN ? AND ?)';
 
-        return $this->execute($query);
+        return $this->execute($query, [$from, $to]);
     }
 
     /**

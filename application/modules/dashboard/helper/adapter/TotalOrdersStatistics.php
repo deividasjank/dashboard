@@ -8,7 +8,7 @@ class TotalOrdersStatistics extends Statistics
 {
     public function getStatistics($from, $to)
     {
-        return $this->model->getTotalOrders();
+        return $this->model->getTotalOrders($from, $to);
     }
 
 }

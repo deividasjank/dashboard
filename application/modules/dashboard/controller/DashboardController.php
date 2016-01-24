@@ -24,7 +24,7 @@ class DashboardController extends Controller
             $to = strtotime($_REQUEST['params']['to'] . ' 23:59:59');
         } else {
             $to = strtotime('last day of last month 23:59:59');
-        }$to = time();
+        }
         $data = [];
         if (isset($_REQUEST['params']['type'])) {
             $data['type'] = trim(preg_replace('/[A-Z]/', ' $0', ucfirst($_REQUEST['params']['type'])));
